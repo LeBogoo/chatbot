@@ -8,6 +8,7 @@ import (
 
 	"github.com/lebogoo/chatbot"
 	"github.com/lebogoo/chatbot/commands"
+	custom "github.com/lebogoo/chatbot/example/commands"
 )
 
 func main() {
@@ -15,6 +16,7 @@ func main() {
 
 	bot.AddCommand(commands.NewSimpleCommand("hello", "Hello, world!"))
 	bot.AddCommand(commands.NewSimpleCommand("bye", "Goodbye, world!"))
+	bot.AddCommand(custom.NewTimeCommand())
 	bot.AddAlias("goodbye", "bye")
 
 	bot.AddAutoMessage("Make sure to follow me on GitHub @lebogoo")
