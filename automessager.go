@@ -8,7 +8,7 @@ func (bot *Chatbot) OnAutoMessage(listener func(string)) {
 
 func (bot *Chatbot) autoMessageLoop() {
 	for {
-		time.Sleep(time.Duration(bot.AutoMessageInterval) * time.Second)
+		time.Sleep(bot.AutoMessageInterval)
 
 		if len(bot.AutoMessages) == 0 {
 			continue
