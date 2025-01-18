@@ -53,7 +53,7 @@ func main() {
     bot.AddAutoMessage("Make sure to follow me on GitHub @lebogoo")
     bot.AddAutoMessage("You can also follow me on Instagram @lebogooo")
 
-    bot.AutoMessageInterval = 10 * time.Second
+    bot.AutoMessageInterval = "*/5 * * * *" // Every 5 minutes
     bot.Start()
 
     bot.OnAutoMessage(func(message string) {
@@ -141,7 +141,7 @@ You can add automated messages that the bot will send at regular intervals. For 
 bot.AddAutoMessage("Remember to stay hydrated!")
 ```
 
-To customize the interval at which the automated messages are sent, you can set the `AutoMessageInterval` property.
+To customize the interval at which the automated messages are sent, you can set the `AutoMessageInterval` property to any valid cron expression.
 
 For example:
 
@@ -150,7 +150,7 @@ bot := chatbot.NewChatbot("!")
 
 bot.AddAutoMessage("Remember to stay hydrated!")
 
-bot.AutoMessageInterval = 10 * time.Second
+bot.AutoMessageInterval = "*/5 * * * *" // Every 5 minutes
 bot.Start()
 ```
 

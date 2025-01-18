@@ -1,18 +1,18 @@
 package chatbot
 
 import (
-	"time"
-
 	"github.com/lebogoo/chatbot/commands"
+	"github.com/robfig/cron/v3"
 )
 
 type Chatbot struct {
 	Prefix               string
 	Commands             map[string]commands.Command
+	Cron                 *cron.Cron
 	Aliases              map[string]string
 	AutoMessages         []string
 	AutoMessageListeners []func(string)
-	AutoMessageInterval  time.Duration
+	AutoMessageInterval  string
 	autoMessageIndex     int
 }
 
@@ -22,11 +22,13 @@ func NewChatbot(prefix string) *Chatbot {
 		Commands:            make(map[string]commands.Command),
 		Aliases:             make(map[string]string),
 		AutoMessages:        []string{},
-		AutoMessageInterval: 60 * time.Second,
+		AutoMessageInterval: "*/5 * * * *",
+		Cron:                cron.New(),
 		autoMessageIndex:    0,
 	}
 }
 
 func (bot *Chatbot) Start() {
-	go bot.autoMessageLoop()
+	bot.Cron.AddFunc(bot.AutoMessageInterval, bot.TriggerAutoMessage)
+	bot.Cron.Start()
 }

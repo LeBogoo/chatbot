@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/lebogoo/chatbot"
 	"github.com/lebogoo/chatbot/commands"
@@ -23,7 +22,7 @@ func main() {
 	bot.AddAutoMessage("Make sure to follow me on GitHub @lebogoo")
 	bot.AddAutoMessage("You can also follow me on Instagram @lebogooo")
 
-	bot.AutoMessageInterval = 10 * time.Second
+	bot.AutoMessageInterval = "* * * * *"
 	bot.Start()
 
 	bot.OnAutoMessage(func(message string) {
