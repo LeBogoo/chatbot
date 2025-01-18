@@ -87,7 +87,7 @@ func (chatbot Chatbot) RemoveAlias(alias string) error {
 	return nil
 }
 
-func (bot Chatbot) HandleCommand(name string, args []string, isAdmin bool) (string, error) {
+func (bot Chatbot) HandleCommand(name string, args []string, username string, isAdmin bool) (string, error) {
 	name = cleanupName(name)
 
 	if alias, exists := bot.Aliases[name]; exists {
@@ -95,12 +95,12 @@ func (bot Chatbot) HandleCommand(name string, args []string, isAdmin bool) (stri
 	}
 
 	if command, exists := bot.Commands[name]; exists {
-		response, err := command.Execute(args, isAdmin)
+		response, err := command.Execute(username, args, isAdmin)
 		if err != nil {
 			return "", err
 		}
 
-		processedResponse, err := bot.postProcessResponse(response, name, args)
+		processedResponse, err := bot.postProcessResponse(response, name, args, username)
 		if err != nil {
 			return bot.CreateUsage(response, name), nil
 		}
@@ -119,14 +119,14 @@ func (chatbot Chatbot) IsCommand(message string) bool {
 	return message[:len(chatbot.Prefix)] == chatbot.Prefix
 }
 
-func (chatbot Chatbot) HandleMessage(message string, isAdmin bool) (string, error) {
+func (chatbot Chatbot) HandleMessage(username, message string, isAdmin bool) (string, error) {
 	if message[:len(chatbot.Prefix)] != chatbot.Prefix {
 		return "", commands.ErrInvalidPrefix
 	}
 
 	parts := strings.Split(message, " ")
 
-	return chatbot.HandleCommand(parts[0][len(chatbot.Prefix):], parts[1:], isAdmin)
+	return chatbot.HandleCommand(parts[0][len(chatbot.Prefix):], parts[1:], username, isAdmin)
 }
 
 func (chatbot Chatbot) CreateUsage(response string, command string) string {
@@ -148,8 +148,9 @@ func (chatbot Chatbot) CreateUsage(response string, command string) string {
 	return usage
 }
 
-func (chatbot Chatbot) postProcessResponse(response string, command string, args []string) (string, error) {
+func (chatbot Chatbot) postProcessResponse(response string, command string, args []string, username string) (string, error) {
 	response = strings.ReplaceAll(response, "{command}", command)
+	response = strings.ReplaceAll(response, "{username}", username)
 
 	// get all named placeholders like {name} using regex
 	re := regexp.MustCompile(`\{(\w+)\}`)

@@ -49,7 +49,7 @@ func main() {
 			continue
 		}
 
-		response, err := bot.HandleMessage(input, false)
+		response, err := bot.HandleMessage(input, "User", false)
 		if err != nil {
 			fmt.Println("Error:", err)
 			continue

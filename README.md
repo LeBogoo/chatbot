@@ -79,7 +79,7 @@ func main() {
             continue
         }
 
-        response, err := bot.HandleMessage(input, false)
+        response, err := bot.HandleMessage("User", input, false)
         if err != nil {
             fmt.Println("Error:", err)
             continue
@@ -175,7 +175,7 @@ You can handle messages with additional user information such as username and ba
 func OnMessage(username string, badges map[string]bool, message string) {
     isAdmin := badges["broadcaster"] || badges["moderator"]
 
-    response, err := bot.HandleMessage(message, isAdmin)
+    response, err := bot.HandleMessage(username, message, isAdmin)
     ...
 }
 ```
