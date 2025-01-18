@@ -7,6 +7,7 @@ This is a simple chatbot library implemented in Go. The library supports command
 - Add and remove commands
 - Add and remove aliases for commands
 - Automated messages at regular intervals
+- Support for placeholders in command responses
 
 ## Installation
 
@@ -42,7 +43,7 @@ import (
 func main() {
     bot := chatbot.NewChatbot("!")
 
-    bot.AddCommand(commands.NewSimpleCommand("hello", "Hello, world!"))
+    bot.AddCommand(commands.NewSimpleCommand("hello", "Hello, {name}! How are you today, {name2}?"))
     bot.AddCommand(commands.NewSimpleCommand("bye", "Goodbye, world!"))
     bot.AddAlias("goodbye", "bye")
 
@@ -149,6 +150,18 @@ bot.AddAutoMessage("Remember to stay hydrated!")
 bot.AutoMessageInterval = 10 * time.Second
 bot.Start()
 ```
+
+### Placeholders in Command Responses
+
+You can use placeholders in command responses to dynamically insert values. Placeholders are defined using curly braces `{}`.
+
+For example:
+
+```go
+bot.AddCommand(commands.NewSimpleCommand("greet", "Hello, {name}!"))
+```
+
+When the command is executed, the placeholder `{name}` will be replaced with the corresponding argument provided by the user.
 
 ## License
 

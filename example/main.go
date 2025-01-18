@@ -15,7 +15,7 @@ import (
 func main() {
 	bot := chatbot.NewChatbot("!")
 
-	bot.AddCommand(commands.NewSimpleCommand("hello", "Hello, world!"))
+	bot.AddCommand(commands.NewSimpleCommand("hello", "Hello, {name}! How are you today, {name2}?"))
 	bot.AddCommand(commands.NewSimpleCommand("bye", "Goodbye, world!"))
 	bot.AddCommand(custom.NewTimeCommand())
 	bot.AddAlias("goodbye", "bye")

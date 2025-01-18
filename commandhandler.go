@@ -1,6 +1,7 @@
 package chatbot
 
 import (
+	"regexp"
 	"strings"
 
 	"github.com/lebogoo/chatbot/commands"
@@ -94,7 +95,17 @@ func (bot Chatbot) HandleCommand(name string, args []string) (string, error) {
 	}
 
 	if command, exists := bot.Commands[name]; exists {
-		return command.Execute(args)
+		response, err := command.Execute(args)
+		if err != nil {
+			return "", err
+		}
+
+		processedResponse, err := bot.postProcessResponse(response, name, args)
+		if err != nil {
+			return bot.CreateUsage(response, name), nil
+		}
+
+		return processedResponse, nil
 	}
 
 	return "", commands.ErrCommandNotFound
@@ -116,4 +127,61 @@ func (chatbot Chatbot) HandleMessage(message string) (string, error) {
 	parts := strings.Split(message, " ")
 
 	return chatbot.HandleCommand(parts[0][len(chatbot.Prefix):], parts[1:])
+}
+
+func (chatbot Chatbot) CreateUsage(response string, command string) string {
+	response = strings.ReplaceAll(response, "{command}", command)
+
+	re := regexp.MustCompile(`\{(\w+)\}`)
+	matches := re.FindAllStringSubmatch(response, -1)
+
+	placeholderIndex := make(map[string]int)
+	for i, match := range matches {
+		placeholderIndex[match[1]] = i
+	}
+
+	usage := "Usage: " + chatbot.Prefix + command
+	for name := range placeholderIndex {
+		usage += " <" + name + ">"
+	}
+
+	return usage
+}
+
+func (chatbot Chatbot) postProcessResponse(response string, command string, args []string) (string, error) {
+	response = strings.ReplaceAll(response, "{command}", command)
+
+	// get all named placeholders like {name} using regex
+	re := regexp.MustCompile(`\{(\w+)\}`)
+	matches := re.FindAllStringSubmatch(response, -1)
+
+	uniqueMatches := make(map[string]string)
+	for _, match := range matches {
+		uniqueMatches[match[1]] = match[1]
+	}
+
+	if len(uniqueMatches) > len(args) {
+		return "", commands.ErrMissingParameters
+	}
+
+	placeholderMap := make(map[string]string)
+
+	// get keys of the unique matches
+	var keys []string
+	for key := range uniqueMatches {
+		keys = append(keys, key)
+	}
+
+	// create a map of the unique match and their values
+	// explicitly use the unique map to avoid duplicate keys
+	for index := range len(uniqueMatches) {
+		placeholderMap[keys[index]] = strings.TrimSpace(args[index])
+	}
+
+	// replace all placeholders with their values
+	for placeholder, value := range placeholderMap {
+		response = strings.ReplaceAll(response, "{"+placeholder+"}", value)
+	}
+
+	return response, nil
 }
