@@ -15,7 +15,7 @@ import (
 func main() {
 	bot := chatbot.NewChatbot("!")
 
-	bot.AddCommand(commands.NewSimpleCommand("hello", "Hello, {name}! How are you today, {name2}?"))
+	bot.AddCommand(commands.NewSimpleCommand("hello", "Hello, {name}! How are you today, {name}?"))
 	bot.AddCommand(commands.NewSimpleCommand("bye", "Goodbye, world!"))
 	bot.AddCommand(custom.NewTimeCommand())
 	bot.AddAlias("goodbye", "bye")
@@ -49,7 +49,7 @@ func main() {
 			continue
 		}
 
-		response, err := bot.HandleMessage(input, "User", false)
+		response, err := bot.HandleMessage("User", input, false)
 		if err != nil {
 			fmt.Println("Error:", err)
 			continue
