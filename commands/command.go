@@ -1,6 +1,6 @@
 package commands
 
 type Command interface {
-	Execute(args []string) (string, error)
+	Execute(args []string, isAdmin bool) (string, error)
 	Name() string
 }

@@ -9,7 +9,7 @@ func NewSimpleCommand(name, response string) *SimpleCommand {
 	return &SimpleCommand{name: name, response: response}
 }
 
-func (c *SimpleCommand) Execute(args []string) (string, error) {
+func (c *SimpleCommand) Execute(args []string, isAdmin bool) (string, error) {
 	return c.response, nil
 }
 

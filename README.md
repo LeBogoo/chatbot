@@ -35,9 +35,11 @@ import (
     "fmt"
     "os"
     "strings"
+    "time"
 
     "github.com/lebogoo/chatbot"
     "github.com/lebogoo/chatbot/commands"
+    custom "github.com/lebogoo/chatbot/example/commands"
 )
 
 func main() {
@@ -45,12 +47,13 @@ func main() {
 
     bot.AddCommand(commands.NewSimpleCommand("hello", "Hello, {name}! How are you today, {name2}?"))
     bot.AddCommand(commands.NewSimpleCommand("bye", "Goodbye, world!"))
+    bot.AddCommand(custom.NewTimeCommand())
     bot.AddAlias("goodbye", "bye")
 
     bot.AddAutoMessage("Make sure to follow me on GitHub @lebogoo")
     bot.AddAutoMessage("You can also follow me on Instagram @lebogooo")
 
-    bot.AutoMessageInterval = 30 * time.Second
+    bot.AutoMessageInterval = 10 * time.Second
     bot.Start()
 
     bot.OnAutoMessage(func(message string) {
@@ -76,7 +79,7 @@ func main() {
             continue
         }
 
-        response, err := bot.HandleMessage(input)
+        response, err := bot.HandleMessage(input, false)
         if err != nil {
             fmt.Println("Error:", err)
             continue
@@ -113,7 +116,7 @@ func NewTimeCommand() *TimeCommand {
 	return &TimeCommand{}
 }
 
-func (c *TimeCommand) Execute(args []string) (string, error) {
+func (c *TimeCommand) Execute(args []string, isAdmin bool) (string, error) {
 	return fmt.Sprintf("The current time is: %s", time.Now().Format("15:04:05")), nil
 }
 
@@ -162,6 +165,20 @@ bot.AddCommand(commands.NewSimpleCommand("greet", "Hello, {name}!"))
 ```
 
 When the command is executed, the placeholder `{name}` will be replaced with the corresponding argument provided by the user.
+
+### Handling Messages with User Information
+
+You can handle messages with additional user information such as username and badges. For example:
+
+```go
+// A message handler function as might be used in a Twitch chat bot
+func OnMessage(username string, badges map[string]bool, message string) {
+    isAdmin := badges["broadcaster"] || badges["moderator"]
+
+    response, err := bot.HandleMessage(message, isAdmin)
+    ...
+}
+```
 
 ## License
 

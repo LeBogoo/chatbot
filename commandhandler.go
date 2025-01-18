@@ -87,7 +87,7 @@ func (chatbot Chatbot) RemoveAlias(alias string) error {
 	return nil
 }
 
-func (bot Chatbot) HandleCommand(name string, args []string) (string, error) {
+func (bot Chatbot) HandleCommand(name string, args []string, isAdmin bool) (string, error) {
 	name = cleanupName(name)
 
 	if alias, exists := bot.Aliases[name]; exists {
@@ -95,7 +95,7 @@ func (bot Chatbot) HandleCommand(name string, args []string) (string, error) {
 	}
 
 	if command, exists := bot.Commands[name]; exists {
-		response, err := command.Execute(args)
+		response, err := command.Execute(args, isAdmin)
 		if err != nil {
 			return "", err
 		}
@@ -119,14 +119,14 @@ func (chatbot Chatbot) IsCommand(message string) bool {
 	return message[:len(chatbot.Prefix)] == chatbot.Prefix
 }
 
-func (chatbot Chatbot) HandleMessage(message string) (string, error) {
+func (chatbot Chatbot) HandleMessage(message string, isAdmin bool) (string, error) {
 	if message[:len(chatbot.Prefix)] != chatbot.Prefix {
 		return "", commands.ErrInvalidPrefix
 	}
 
 	parts := strings.Split(message, " ")
 
-	return chatbot.HandleCommand(parts[0][len(chatbot.Prefix):], parts[1:])
+	return chatbot.HandleCommand(parts[0][len(chatbot.Prefix):], parts[1:], isAdmin)
 }
 
 func (chatbot Chatbot) CreateUsage(response string, command string) string {
