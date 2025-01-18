@@ -16,8 +16,8 @@ type Chatbot struct {
 	autoMessageIndex     int
 }
 
-func NewChatbot(prefix string) Chatbot {
-	return Chatbot{
+func NewChatbot(prefix string) *Chatbot {
+	return &Chatbot{
 		Prefix:              prefix,
 		Commands:            make(map[string]commands.Command),
 		Aliases:             make(map[string]string),
