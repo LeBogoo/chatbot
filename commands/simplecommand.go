@@ -16,3 +16,7 @@ func (c *SimpleCommand) Execute(username string, args []string, isAdmin bool) (s
 func (c *SimpleCommand) Name() string {
 	return c.name
 }
+
+func (c *SimpleCommand) Response() string {
+	return c.response
+}
