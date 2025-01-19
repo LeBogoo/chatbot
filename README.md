@@ -8,6 +8,7 @@ This is a simple chatbot library implemented in Go. The library supports command
 - Add and remove aliases for commands
 - Automated messages at regular intervals
 - Support for placeholders in command responses
+- Automatic responses for specific keywords
 
 ## Installation
 
@@ -52,6 +53,8 @@ func main() {
 
     bot.AddAutoMessage("Make sure to follow me on GitHub @lebogoo")
     bot.AddAutoMessage("You can also follow me on Instagram @lebogooo")
+
+    bot.AddAutoResponse(chatbot.NewAutoResponse([]string{"what", "your", "instagram"}, "My Instagram handle is @lebogooo"))
 
     bot.AutoMessageInterval = "*/5 * * * *" // Every 5 minutes
     bot.Start()
@@ -152,6 +155,32 @@ bot.AddAutoMessage("Remember to stay hydrated!")
 
 bot.AutoMessageInterval = "*/5 * * * *" // Every 5 minutes
 bot.Start()
+```
+
+### Auto Responses
+
+You can add auto responses that the bot will use to respond to specific messages. For example:
+
+```go
+bot.AddAutoResponse(chatbot.NewAutoResponse([]string{"what", "your", "instagram"}, "My Instagram handle is @lebogooo"))
+```
+
+To get the list of auto responses, you can use the `GetAutoResponses` method:
+
+```go
+autoResponses := bot.GetAutoResponses()
+for index, response := range autoResponses {
+    fmt.Println(index, response.TriggerWords, response.Response)
+}
+```
+
+To remove an auto response, you can use the `RemoveAutoResponse` method:
+
+```go
+err := bot.RemoveAutoResponse(index)
+if err != nil {
+    fmt.Println("Error:", err)
+}
 ```
 
 ### Placeholders in Command Responses

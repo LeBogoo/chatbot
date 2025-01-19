@@ -119,16 +119,6 @@ func (chatbot Chatbot) IsCommand(message string) bool {
 	return message[:len(chatbot.Prefix)] == chatbot.Prefix
 }
 
-func (chatbot Chatbot) HandleMessage(username, message string, isAdmin bool) (string, error) {
-	if message[:len(chatbot.Prefix)] != chatbot.Prefix {
-		return "", commands.ErrInvalidPrefix
-	}
-
-	parts := strings.Split(message, " ")
-
-	return chatbot.HandleCommand(parts[0][len(chatbot.Prefix):], parts[1:], username, isAdmin)
-}
-
 func (chatbot Chatbot) CreateUsage(response string, command string) string {
 	response = strings.ReplaceAll(response, "{command}", command)
 

@@ -22,6 +22,8 @@ func main() {
 	bot.AddAutoMessage("Make sure to follow me on GitHub @lebogoo")
 	bot.AddAutoMessage("You can also follow me on Instagram @lebogooo")
 
+	bot.AddAutoResponse(chatbot.NewAutoResponse([]string{"what", "your", "instagram"}, "My Instagram handle is @lebogooo"))
+
 	bot.AutoMessageInterval = "* * * * *"
 	bot.Start()
 
@@ -42,11 +44,6 @@ func main() {
 	for {
 		fmt.Print("You: ")
 		input, _ := reader.ReadString('\n')
-		isCommand := bot.IsCommand(input)
-		if !isCommand {
-			fmt.Printf("Please enter a valid command with the prefix \"%s\"\n", bot.Prefix)
-			continue
-		}
 
 		response, err := bot.HandleMessage("User", input, false)
 		if err != nil {
